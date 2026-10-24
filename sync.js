@@ -141,3 +141,22 @@ $("restBtn").addEventListener("click", async () => {
     await window.c1Sync.flush(); setTimeout(() => location.reload(), 800);
   } catch (e) { m.textContent = "Pas de réseau : réessaie quand tu es connectée."; b.disabled = false; }
 });
+
+// ===== Restaurer depuis la dernière sauvegarde (bilan.json du dépôt privé) =====
+let restArmed = false;
+$("restBtn").addEventListener("click", async () => {
+  const m = $("restMsg"), t = ghTok();
+  if (!t) { m.textContent = "Enregistre d'abord ton jeton GitHub (Programme automatique, plus bas)."; return; }
+  if (!restArmed) { restArmed = true; $("restBtn").textContent = "Confirmer : remplacer ma progression sur ce téléphone"; m.textContent = "Ta progression sur ce téléphone sera remplacée par la sauvegarde."; setTimeout(() => { restArmed = false; $("restBtn").textContent = "Restaurer ma dernière sauvegarde"; }, 8000); return; }
+  restArmed = false; m.textContent = "Récupération de la sauvegarde…";
+  try {
+    const r = await fetch(API + "bilan.json", { headers: ghHead(t, true), cache: "no-store" });
+    if (!r.ok) { m.textContent = r.status === 404 ? "Aucune sauvegarde trouvée pour l'instant." : "La sauvegarde n'a pas pu être lue. Vérifie ton jeton."; return; }
+    const b = await r.json();
+    const n = window.c1Sync.importAll(b.progression || {});
+    if (!n) { m.textContent = "La sauvegarde est vide."; return; }
+    let d = ""; try { d = new Date(b.envoye).toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
+    m.textContent = n + " élément(s) restauré(s), sauvegarde du " + d + ". Redémarrage…";
+    await window.c1Sync.flush(); setTimeout(() => location.reload(), 800);
+  } catch (e) { m.textContent = "Pas de réseau : réessaie quand tu es connectée."; }
+});

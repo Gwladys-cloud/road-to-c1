@@ -377,6 +377,11 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
         <button class="btn ghost" id="impBtn" type="button">Importer ma progression</button>
         <p class="fine" id="impMsg" role="status"></p>
       </div>
+      <div class="tform">
+        <p class="fine"><b>Restaurer ma progression</b> : récupère ta dernière sauvegarde (le dernier bilan envoyé). Utile après une réinstallation ou un changement de téléphone.</p>
+        <button class="btn ghost" id="restBtn" type="button">Restaurer ma dernière sauvegarde</button>
+        <p class="fine" id="restMsg" role="status"></p>
+      </div>
       <form id="ghForm" class="tform">
         <p class="fine"><b>Programme automatique</b> : colle ici ton jeton GitHub (il commence par github_pat_). L'app envoie ton bilan chaque jour et reçoit ton programme du matin.</p>
         <input id="ghIn" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" aria-label="Jeton GitHub">
