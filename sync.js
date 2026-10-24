@@ -50,3 +50,72 @@ const saved = getCode();
 if (db) { saved ? connect(saved) : askCode(); }
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+
+// ===== Programme automatique : bilan quotidien et programme du matin (dépôt GitHub privé) =====
+const GH_REPO = "Gwladys-cloud/road-to-c1-donnees";
+const GH_KEY = "_c1gh";
+const API = "https://api.github.com/repos/" + GH_REPO + "/contents/";
+const ghTok = () => { try { return localStorage.getItem(GH_KEY); } catch (e) { return null; } };
+const ghHead = (t, raw) => ({ "Authorization": "Bearer " + t, "Accept": raw ? "application/vnd.github.raw+json" : "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" });
+const b64 = (str) => { const bytes = new TextEncoder().encode(str); let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); };
+const ghMsg = (t) => { const m = $("ghMsg"); if (m) m.textContent = t; };
+
+async function loadProgramme() {
+  const t = ghTok(); if (!t || !navigator.onLine) return;
+  try {
+    const r = await fetch(API + "programme.json", { headers: ghHead(t, true), cache: "no-store" });
+    if (r.status === 401 || r.status === 403 || r.status === 404) { ghMsg("Le jeton ne donne pas accès à road-to-c1-donnees. Vérifie-le."); return; }
+    if (!r.ok) return;
+    const txt = await r.text(); const p = JSON.parse(txt);
+    let old = null; try { old = localStorage.getItem("_c1prog"); } catch (e) {}
+    if (old !== txt) {
+      try { localStorage.setItem("_c1prog", txt); } catch (e) {}
+      let done = false; try { done = sessionStorage.getItem("_c1progReload") === p.date; } catch (e) {}
+      if (!done) { try { sessionStorage.setItem("_c1progReload", p.date || "x"); } catch (e) {} location.reload(); }
+    }
+  } catch (e) {}
+}
+
+let sending = false;
+async function sendBilan(force) {
+  const t = ghTok(); if (!t || sending || !navigator.onLine) return;
+  const data = {}; try { Object.keys(localStorage).filter(k => /^c1/.test(k) && k !== "c1tab").sort().forEach(k => { data[k] = localStorage.getItem(k); }); } catch (e) {}
+  const body = JSON.stringify(data);
+  let last = null, lastAt = 0; try { last = localStorage.getItem("_c1bilanSent"); lastAt = +localStorage.getItem("_c1bilanAt") || 0; } catch (e) {}
+  if (!force && (last === body || Date.now() - lastAt < 20 * 60 * 1000)) return;
+  sending = true;
+  try {
+    const bilan = JSON.stringify({ envoye: new Date().toISOString(), progression: data }, null, 1);
+    let sha;
+    const g = await fetch(API + "bilan.json", { headers: ghHead(t), cache: "no-store" });
+    if (g.ok) sha = (await g.json()).sha;
+    else if (g.status !== 404) { ghMsg("Bilan non envoyé : le jeton est refusé. Vérifie-le."); sending = false; return; }
+    const r = await fetch(API + "bilan.json", { method: "PUT", headers: ghHead(t), body: JSON.stringify({ message: "Bilan du " + new Date().toLocaleDateString("fr-FR"), content: b64(bilan), sha }) });
+    if (r.ok) {
+      try { localStorage.setItem("_c1bilanSent", body); localStorage.setItem("_c1bilanAt", String(Date.now())); } catch (e) {}
+      ghMsg("Bilan envoyé à ton prof · " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }));
+    } else ghMsg("Bilan non envoyé pour l'instant, nouvel essai plus tard.");
+  } catch (e) {}
+  sending = false;
+}
+
+$("ghForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const t = $("ghIn").value.trim();
+  if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(t)) { ghMsg("Ce jeton n'a pas le bon format. Il commence par github_pat_."); return; }
+  ghMsg("Vérification du jeton…");
+  try {
+    const r = await fetch("https://api.github.com/repos/" + GH_REPO, { headers: ghHead(t) });
+    if (!r.ok) { ghMsg("Ce jeton n'ouvre pas road-to-c1-donnees. Vérifie qu'il est limité à ce dépôt avec « Contents : Read and write »."); return; }
+  } catch (err) { ghMsg("Pas de réseau : réessaie quand tu es connectée."); return; }
+  try { localStorage.setItem(GH_KEY, t); } catch (err) {}
+  $("ghIn").value = ""; ghMsg("Jeton enregistré ✓ Envoi de ton premier bilan…");
+  await sendBilan(true); loadProgramme();
+});
+if (ghTok()) {
+  ghMsg("Programme automatique actif.");
+  loadProgramme();
+  setTimeout(() => sendBilan(false), 8000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendBilan(false); });
+  window.addEventListener("online", () => { loadProgramme(); sendBilan(false); });
+}

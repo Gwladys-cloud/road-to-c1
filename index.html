@@ -322,6 +322,13 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
       <div class="tile"><span class="tl">Réussite quiz</span><b id="rate">–</b></div>
       <div class="tile"><span class="tl">Séances voiture</span><b id="tSess">0</b></div>
     </div>
+    <div class="card" id="progCard" hidden>
+      <span class="eyebrow ac" id="progDate">Programme du jour</span>
+      <h2 class="h2" id="progTitle"></h2>
+      <p id="progMsg"></p>
+      <ul class="rules" id="progFocus"></ul>
+      <p class="fine" id="progNew"></p>
+    </div>
     <p class="fine pad" id="syncState">Sauvegarde : démarrage…</p>
     <details class="card fold" id="acct">
       <summary>Ma sauvegarde <span class="fine" id="acctSum"></span></summary>
@@ -337,6 +344,12 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
         <button class="btn ghost" id="impBtn" type="button">Importer ma progression</button>
         <p class="fine" id="impMsg" role="status"></p>
       </div>
+      <form id="ghForm" class="tform">
+        <p class="fine"><b>Programme automatique</b> : colle ici ton jeton GitHub (il commence par github_pat_). L'app envoie ton bilan chaque jour et reçoit ton programme du matin.</p>
+        <input id="ghIn" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" aria-label="Jeton GitHub">
+        <button class="btn ghost" type="submit">Enregistrer le jeton</button>
+        <p class="fine" id="ghMsg" role="status"></p>
+      </form>
     </details>
 
     <div class="card today">
@@ -484,6 +497,9 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
 </nav>
 
 <script>
+// ===== Programme du jour préparé par Claude (gardé sur le téléphone, mis à jour chaque matin) =====
+const PROG=(function(){try{const p=JSON.parse(localStorage.getItem("_c1prog")||"null");return p&&typeof p==="object"?p:null}catch(e){return null}})();
+const progList=k=>PROG&&Array.isArray(PROG[k])?PROG[k]:[];
 const cambQ=w=>w.replace(/<[^>]+>/g,"").replace(/\(.*?\)/g,"").replace(/\b(sth|sb|someone|something)\b/g,"").replace(/\+.*$/,"").replace(/[…?!—–/].*$/,"").replace(/^(to|a|an|the) /i,"").replace(/\s+/g," ").trim();
 const camb=w=>`<a class="camb" href="https://dictionary.cambridge.org/search/direct/?datasetsearch=english&q=${encodeURIComponent(cambQ(w))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Cambridge ↗</a>`;
 const COURSES={wish:`<p><b>La règle d'or : <i>I wish</i> ne veut presque jamais dire « je souhaite ».</b> Il exprime un <b>regret</b>, ou l'envie que les choses soient <b>différentes de la réalité</b>. Bonne traduction : « <b>j'aimerais que…</b> » ou « <b>si seulement…</b> ».</p>
@@ -1105,6 +1121,8 @@ const LABELS={"PMO / DSI":"Réunions & projets","Anglais de DSI":"Leadership DSI
 const catLabel=c=>LABELS[c]||c;
 // ===== Exercices à écrire =====
 function alts(a){const v=new Set([a]);v.add(a.replace(/^'d /,"would "));v.add(a.replace(/can't/g,"cannot"));v.add(a.replace(/can't/g,"can not"));v.add(a.replace(/n't/g," not").replace(/ca not/g,"can not"));v.add(a.replace(/won't/g,"will not"));return [...v]}
+progList("quiz").forEach(x=>{if(x&&typeof x.q==="string"&&Array.isArray(x.o)&&x.o.length>1&&x.o.every(o=>typeof o==="string")){const a=Number.isInteger(x.a)&&x.a>=0&&x.a<x.o.length?x.a:0;Q.push({c:"Mon programme",s:x.s||"Programme du jour",q:x.q,o:x.o,a,e:x.e||""})}});
+progList("cartes").forEach(c=>{if(Array.isArray(c)&&typeof c[0]==="string"&&typeof c[1]==="string")CARDS.push([c[0],c[1]])});
 Q.filter(x=>x.c==="Mon programme"&&!x.o[x.a].includes("Ø")).forEach(x=>Q.push({c:"À écrire",s:x.s,q:x.q,k:"w:"+x.q,typed:true,ans:alts(x.o[x.a]),o:x.o,a:0,e:x.e}));
 
 // storage
@@ -1708,6 +1726,8 @@ Convince your manager to give your team more resources.|Use an inversion: not on
 Describe the meeting you had last year with English-speaking colleagues. How did it go?|Use: I was asked to… although I… looking back, I wish I had…
 Explain to a new colleague how your steering committees work.|Useful: basically… the aim is to… decisions are made by…`.split("\n").forEach(l=>{const p=l.split("|");SP.push([p[0],p[1],"Prog"])});
 
+progList("phrases").forEach(t=>{if(Array.isArray(t)&&typeof t[0]==="string"&&typeof t[1]==="string")TR.push([t[0],t[1],"Mon programme"])});
+progList("oral").forEach(t=>{if(Array.isArray(t)&&typeof t[0]==="string")SP.push([t[0],typeof t[1]==="string"?t[1]:"","Prog"])});
 // ===== Exercices 100 % anglais : reformulation + questions de réunion =====
 const RF=`I regret not practising more.|WISH|I wish I had practised more.
 It's possible that he forgot the meeting.|MAY|He may have forgotten the meeting.
@@ -2904,6 +2924,19 @@ document.getElementById("impBtn").onclick=async()=>{
   m.textContent=n+" élément(s) importé(s). Envoi dans ta base…";
   await window.c1Sync.flush();setTimeout(()=>location.reload(),600);
 };
+
+// ===== Affichage du programme du jour =====
+(function(){
+  if(!PROG)return;const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const card=document.getElementById("progCard");card.hidden=false;
+  let d="";try{d=new Date(PROG.date+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}catch(e){}
+  document.getElementById("progDate").textContent="Programme du "+(d||"jour");
+  document.getElementById("progTitle").textContent=PROG.titre||"Ton programme du jour";
+  document.getElementById("progMsg").textContent=PROG.message||"";
+  document.getElementById("progFocus").innerHTML=progList("focus").map(f=>"<li>"+esc(f)+"</li>").join("");
+  const n=progList("quiz").length,ph=progList("phrases").length;
+  document.getElementById("progNew").textContent=(n||ph)?"Nouveau aujourd'hui : "+n+" question(s) de quiz et "+ph+" phrase(s) pour la voiture, dans « Mon programme ».":"";
+})();
 </script>
 
 <script type="module" src="sync.js"></script>
