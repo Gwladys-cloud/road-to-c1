@@ -329,28 +329,6 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
       <ul class="rules" id="progFocus"></ul>
       <p class="fine" id="progNew"></p>
     </div>
-    <p class="fine pad" id="syncState">Sauvegarde : démarrage…</p>
-    <details class="card fold" id="acct">
-      <summary>Ma sauvegarde <span class="fine" id="acctSum"></span></summary>
-      <p class="fine">Tes résultats sont enregistrés dans ta base Firebase « Road to C1 », sous ton code personnel. Tu ne le tapes qu'une fois par appareil.</p>
-      <form id="codeForm" class="tform">
-        <input id="codeIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ton code personnel" aria-label="Code personnel">
-        <button class="btn" type="submit">Enregistrer le code</button>
-      </form>
-      <p class="fine" id="codeMsg" role="status"></p>
-      <div class="tform">
-        <p class="fine"><b>Récupérer ta progression de l'ancienne app</b> : dans Road to C1 sur Claude, touche « Copier ma progression », puis colle le texte ici.</p>
-        <textarea id="impTxt" rows="3" spellcheck="false" aria-label="Progression à importer"></textarea>
-        <button class="btn ghost" id="impBtn" type="button">Importer ma progression</button>
-        <p class="fine" id="impMsg" role="status"></p>
-      </div>
-      <form id="ghForm" class="tform">
-        <p class="fine"><b>Programme automatique</b> : colle ici ton jeton GitHub (il commence par github_pat_). L'app envoie ton bilan chaque jour et reçoit ton programme du matin.</p>
-        <input id="ghIn" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" aria-label="Jeton GitHub">
-        <button class="btn ghost" type="submit">Enregistrer le jeton</button>
-        <p class="fine" id="ghMsg" role="status"></p>
-      </form>
-    </details>
 
     <div class="card today">
       <div class="row between"><h2 class="h2" id="todayTitle">Aujourd'hui</h2><span class="fine" id="todayCount"></span></div>
@@ -383,6 +361,28 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
         <button class="btn" id="testGo">Passer le test d'étape</button>
         <div id="testHist"></div>
       </div>
+    </details>
+    <p class="fine pad" id="syncState">Sauvegarde : démarrage…</p>
+    <details class="card fold" id="acct">
+      <summary>Ma sauvegarde <span class="fine" id="acctSum"></span></summary>
+      <p class="fine">Tes résultats sont enregistrés dans ta base Firebase « Road to C1 », sous ton code personnel. Tu ne le tapes qu'une fois par appareil.</p>
+      <form id="codeForm" class="tform">
+        <input id="codeIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ton code personnel" aria-label="Code personnel">
+        <button class="btn" type="submit">Enregistrer le code</button>
+      </form>
+      <p class="fine" id="codeMsg" role="status"></p>
+      <div class="tform">
+        <p class="fine"><b>Récupérer ta progression de l'ancienne app</b> : dans Road to C1 sur Claude, touche « Copier ma progression », puis colle le texte ici.</p>
+        <textarea id="impTxt" rows="3" spellcheck="false" aria-label="Progression à importer"></textarea>
+        <button class="btn ghost" id="impBtn" type="button">Importer ma progression</button>
+        <p class="fine" id="impMsg" role="status"></p>
+      </div>
+      <form id="ghForm" class="tform">
+        <p class="fine"><b>Programme automatique</b> : colle ici ton jeton GitHub (il commence par github_pat_). L'app envoie ton bilan chaque jour et reçoit ton programme du matin.</p>
+        <input id="ghIn" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" aria-label="Jeton GitHub">
+        <button class="btn ghost" type="submit">Enregistrer le jeton</button>
+        <p class="fine" id="ghMsg" role="status"></p>
+      </form>
     </details>
   </section>
 
