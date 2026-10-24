@@ -1,0 +1,16 @@
+{
+  "name": "Road to C1",
+  "short_name": "Road to C1",
+  "description": "Mon programme d'anglais B2 vers C1 : séances audio en voiture, quiz, grammaire et révisions.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF0F5",
+  "theme_color": "#16225A",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
