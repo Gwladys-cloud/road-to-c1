@@ -119,3 +119,25 @@ if (ghTok()) {
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendBilan(false); });
   window.addEventListener("online", () => { loadProgramme(); sendBilan(false); });
 }
+
+// ===== Restauration depuis la dernière sauvegarde (bilan.json du dépôt privé) =====
+let restArm = null;
+$("restBtn").addEventListener("click", async () => {
+  const b = $("restBtn"), m = $("restMsg"), t = ghTok();
+  if (!t) { m.textContent = "Enregistre d'abord ton jeton GitHub, juste au-dessus."; return; }
+  if (!restArm) {
+    b.textContent = "Confirmer : remplacer ma progression ?"; m.textContent = "Ta progression actuelle sera remplacée par la dernière sauvegarde. Touche à nouveau pour confirmer.";
+    restArm = setTimeout(() => { restArm = null; b.textContent = "Restaurer depuis la sauvegarde"; m.textContent = ""; }, 6000); return;
+  }
+  clearTimeout(restArm); restArm = null; b.textContent = "Restaurer depuis la sauvegarde"; b.disabled = true; m.textContent = "Récupération de la sauvegarde…";
+  try {
+    const r = await fetch(API + "bilan.json", { headers: ghHead(t, true), cache: "no-store" });
+    if (!r.ok) { m.textContent = r.status === 404 ? "Aucune sauvegarde trouvée pour l'instant." : "Accès refusé : vérifie ton jeton."; b.disabled = false; return; }
+    const d = JSON.parse(await r.text());
+    const n = window.c1Sync.importAll(d.progression || {});
+    if (!n) { m.textContent = "La sauvegarde est vide."; b.disabled = false; return; }
+    let when = ""; try { when = new Date(d.envoye).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }); } catch (e) {}
+    m.textContent = n + " élément(s) restauré(s), sauvegarde du " + when + ". Redémarrage…";
+    await window.c1Sync.flush(); setTimeout(() => location.reload(), 800);
+  } catch (e) { m.textContent = "Pas de réseau : réessaie quand tu es connectée."; b.disabled = false; }
+});
