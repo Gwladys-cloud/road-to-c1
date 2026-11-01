@@ -411,6 +411,7 @@ button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline
         <div class="field"><span class="lbl">Exercices</span><div class="chips" id="mixChips"></div></div>
         <div class="field"><span class="lbl">Durée</span><div class="chips" id="durChips"></div></div>
         <div class="field"><span class="lbl">Temps pour répondre</span><div class="chips" id="pauseChips"></div></div>
+        <div class="field"><span class="lbl">Répéter après la correction</span><div class="chips" id="repChips"></div><p class="fine">Le temps de répéter la bonne phrase à voix haute, avant de passer à la suivante.</p></div>
         <div class="field"><span class="lbl">Vitesse de la voix</span><div class="chips" id="rateChips"></div></div>
       </details>
       <details class="sub">
@@ -511,7 +512,43 @@ const PROG=(function(){try{const p=JSON.parse(localStorage.getItem("_c1prog")||"
 const progList=k=>PROG&&Array.isArray(PROG[k])?PROG[k]:[];
 const cambQ=w=>w.replace(/<[^>]+>/g,"").replace(/\(.*?\)/g,"").replace(/\b(sth|sb|someone|something)\b/g,"").replace(/\+.*$/,"").replace(/[…?!—–/].*$/,"").replace(/^(to|a|an|the) /i,"").replace(/\s+/g," ").trim();
 const camb=w=>`<a class="camb" href="https://dictionary.cambridge.org/search/direct/?datasetsearch=english&q=${encodeURIComponent(cambQ(w))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Cambridge ↗</a>`;
-const COURSES={wish:`<p><b>La règle d'or : <i>I wish</i> ne veut presque jamais dire « je souhaite ».</b> Il exprime un <b>regret</b>, ou l'envie que les choses soient <b>différentes de la réalité</b>. Bonne traduction : « <b>j'aimerais que…</b> » ou « <b>si seulement…</b> ».</p>
+const COURSES={nosooner:`<p><b>Le sens :</b> deux actions qui se suivent <b>immédiatement</b>, la seconde arrive juste après la première, souvent avec une idée de surprise ou d'agacement. En français : « <b>à peine… que…</b> ».</p>
+<p><i>No sooner had I sent the email than the client called.</i><br>→ À peine avais-je envoyé le mail que le client a appelé.</p>
+<p class="tt">La construction, pas à pas</p>
+<p>On part d'une phrase simple : <i>As soon as I sent the email, the client called.</i></p>
+<ol class="rules">
+<li><b>L'action 1 passe au past perfect</b>, car elle a eu lieu avant l'action 2 : <i>I <b>had sent</b> the email</i>.</li>
+<li><b>On inverse</b> le sujet et <i>had</i>, comme dans une question : <i><b>had I</b> sent</i>.</li>
+<li><b>On place <i>No sooner</i> devant</b>, et <b><i>than</i></b> avant l'action 2, qui reste au prétérit : <i><b>No sooner</b> had I sent the email <b>than</b> the client called.</i></li>
+</ol>
+<div class="formula">No sooner + had + sujet + participe passé … than + sujet + prétérit</div>
+<p><b>Astuce :</b> le français fait exactement pareil ! « À peine <b>avais-je</b> envoyé… » : le sujet passe aussi après le verbe. <i>avais-je</i> = <i>had I</i>.</p>
+<p class="tt">Pourquoi than ?</p>
+<p><i>Sooner</i> est un comparatif (« plus tôt »), comme <i>bigger</i> ou <i>faster</i>. Après un comparatif, on met toujours <b>than</b>. Mot à mot : « pas plus tôt avais-je envoyé le mail que le client appelait ».</p>
+<p class="tt">Les expressions de la même famille</p>
+<div class="tw"><table><tr><th>Expression</th><th>Construction</th><th>Registre</th></tr>
+<tr><td>No sooner… than</td><td><i>No sooner had I arrived <b>than</b>…</i></td><td>soutenu, écrit</td></tr>
+<tr><td>Hardly… when</td><td><i>Hardly had I arrived <b>when</b>…</i></td><td>soutenu, écrit</td></tr>
+<tr><td>Scarcely… when</td><td><i>Scarcely had I arrived <b>when</b>…</i></td><td>très soutenu</td></tr>
+<tr><td>As soon as</td><td><i>As soon as I arrived, …</i></td><td>courant, oral</td></tr>
+<tr><td>The moment</td><td><i>The moment I arrived, …</i></td><td>courant, oral</td></tr>
+</table></div>
+<p><b>Retiens :</b> <i>sooner</i> va avec <b>than</b> (c'est un comparatif) ; <i>hardly</i> et <i>scarcely</i> vont avec <b>when</b>.</p>
+<p class="tt">Les pièges</p>
+<ul class="rules">
+<li>✗ <i>No sooner <b>I had</b> sent…</i> → l'inversion est obligatoire : <b>had I</b> sent.</li>
+<li>✗ <i>No sooner had I sent… <b>when</b>…</i> → avec <i>no sooner</i>, c'est <b>than</b>. <i>When</i> va avec <i>hardly</i>.</li>
+<li>✗ <i>No sooner had I <b>send</b>…</i> → après <i>had</i>, le <b>participe passé</b> : <i>sent</i>, <i>started</i>, <i>known</i>.</li>
+<li>✗ <i>… <b>that</b> the client called</i> → <b>than</b> (comparaison), pas <i>that</i>. Les deux mots se ressemblent.</li>
+</ul>
+<p class="tt">Quand l'utiliser ?</p>
+<p>À l'<b>écrit</b> (rapports, mails soignés) et dans une <b>présentation</b> pour un effet de style. C'est très apprécié au CLOE niveau C1. À l'oral de tous les jours, <i>as soon as</i> suffit.</p>
+<p class="tt">À toi : transforme avec <i>No sooner</i></p>
+<ol class="rules">
+<li><i>As soon as we launched the app, users reported a bug.</i><small>→ No sooner had we launched the app than users reported a bug.</small></li>
+<li><i>As soon as the CFO approved the budget, he asked for cuts.</i><small>→ No sooner had the CFO approved the budget than he asked for cuts.</small></li>
+</ol>`,
+wish:`<p><b>La règle d'or : <i>I wish</i> ne veut presque jamais dire « je souhaite ».</b> Il exprime un <b>regret</b>, ou l'envie que les choses soient <b>différentes de la réalité</b>. Bonne traduction : « <b>j'aimerais que…</b> » ou « <b>si seulement…</b> ».</p>
 <p><i>I wish I had more time.</i><br>✗ « Je souhaite avoir plus de temps. »<br>✓ « Si seulement j'avais plus de temps ! » (mais je n'en ai pas)</p>
 <p class="tt">Hope ou wish ? Une seule question : est-ce possible ?</p>
 <div class="tw"><table><tr><th>Possible → hope</th><th>Faux ou impossible → wish</th></tr>
@@ -526,7 +563,8 @@ const COURSES={wish:`<p><b>La règle d'or : <i>I wish</i> ne veut presque jamais
 <ul class="rules"><li><i>I'd like to discuss the budget.</i> → Je souhaiterais parler du budget.</li>
 <li><i>I want to change supplier.</i> → Je souhaite changer de fournisseur.</li>
 <li><i>I hope we can find a solution.</i> → J'espère qu'on trouvera une solution.</li></ul>`};
-const moreHTML=k=>COURSES[k]?`<details class="more"><summary>Mieux comprendre wish (≠ « je souhaite »)</summary><div class="gbody" style="padding:10px 0 0">${COURSES[k]}</div></details>`:"";
+const MORE_T={wish:"Mieux comprendre wish (≠ « je souhaite »)",nosooner:"Mieux comprendre no sooner… than (à peine… que)"};
+const moreHTML=k=>COURSES[k]?`<details class="more"><summary>${MORE_T[k]||"Mieux comprendre"}</summary><div class="gbody" style="padding:10px 0 0">${COURSES[k]}</div></details>`:"";
 const Q=[
 // Phrasal verbs
 {c:"Phrasal verbs",q:"The meeting was ___ because the CEO was ill.",fr:"La réunion a été annulée…",o:["called off","called up","put off by","turned down"],a:0,e:"<b>Call off</b> = annuler. <i>Put off</i> = reporter (et sans « by » ici)."},
@@ -1887,11 +1925,12 @@ const inTheme=t=>theme==="Tout"?t[2]!=="Verbes irréguliers":(TGROUP[theme]||[th
 if(!THEMES.includes(theme)){theme=["Voyage","Quotidien"].includes(theme)?"Vie courante":"Mon programme"}
 function updFresh(){const TRf=TR.filter(inTheme);const n=TRf.filter(t=>seen["t:"+t[1]]==null).length;document.getElementById("freshInfo").textContent=`${TRf.length} phrases dans ce thème, dont ${n} jamais entendues. Chaque séance choisit d'abord les nouvelles, puis fait revenir celles de la veille et de la semaine passée.`}
 chipGroup(document.getElementById("themeChips"),THEMES.map(t=>[t,catLabel(t)]),theme,v=>{theme=v;S.set("c1theme2",v);updFresh()});
-let mix=S.get("c1mix","eq"),dur=S.get("c1dur2",30),pauseF=S.get("c1pause2",1.5),rateEN=S.get("c1rate3",.85);
+let reps=S.get("c1reps",2),mix=S.get("c1mix","eq"),dur=S.get("c1dur2",30),pauseF=S.get("c1pause2",1.5),rateEN=S.get("c1rate3",.85);
 function chipGroup(el,opts,cur,cb){el.innerHTML="";opts.forEach(([v,l])=>{const b=document.createElement("button");b.className="chip";b.textContent=l;b.setAttribute("aria-pressed",v===cur);b.onclick=()=>{el.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));cb(v)};el.appendChild(b)})}
 chipGroup(document.getElementById("mixChips"),[["eq","Équilibré (1/3 traduction)"],["tr","Surtout traduction"]],mix,v=>{mix=v;S.set("c1mix",v)});
 chipGroup(document.getElementById("durChips"),[[10,"10 min"],[20,"20 min"],[30,"30 min"],[40,"40 min"]],dur,v=>{dur=v;S.set("c1dur2",v)});
 chipGroup(document.getElementById("pauseChips"),[[1,"Normal"],[1.5,"Long"],[2,"Très long"]],pauseF,v=>{pauseF=v;S.set("c1pause2",v)});
+chipGroup(document.getElementById("repChips"),[[1,"1 fois"],[2,"2 fois"],[3,"3 fois"]],reps,v=>{reps=v;S.set("c1reps",v);try{updSum()}catch(e){}});
 chipGroup(document.getElementById("rateChips"),[[.65,"Très lente"],[.75,"Lente"],[.85,"Normale"],[1,"Naturelle"]],rateEN,v=>{rateEN=v;S.set("c1rate3",v)});
 if(!canSpeak){document.getElementById("noSpeech").hidden=false;document.getElementById("go").disabled=true}
 
@@ -1911,28 +1950,31 @@ function buildSession(){
   const SPf=theme==="Anglais de DSI"?SP.filter(s=>s[2]==="DSI"):theme==="PMO / DSI"?SP.filter(s=>s[2]==="PMO"):theme==="Mon programme"?SP.filter(s=>s[2]==="Prog"||s[2]==="PMO"):SP;
   const tr=pickFresh(TRf,t=>"t:"+t[1],Math.min(TRf.length,dur*2)),qz=pickFresh(Qf,x=>"q:"+x.q,Math.min(Qf.length,dur)),sp=pickFresh(SPf,x=>"s:"+x[0],Math.min(SPf.length,Math.ceil(dur/3)));let ti=0,qi=0,si=0;
   const w=s=>s.split(/\s+/).length;
+  // Temps pour répéter une phrase à voix haute (une fois), puis pause avant l'exercice suivant.
+  const RP=e=>(1500+w(e)*550)*pauseF/rateEN*0.85, NEXT=3000;
+  const estSteps=st=>st.reduce((t,[k,v])=>t+(k==="wait"?v/1000:k==="beep"?.4:(k==="fr"||k==="en")?w(String(v))*.45/(k==="en"?rateEN/0.85:1)+.6:0),0);
   items.push({kind:"Bienvenue",fr:"C'est parti !",en:"",steps:[["fr",`C'est parti pour ${dur} minutes d'anglais. Après chaque bip, parle à voix haute.`],["wait",1000]]});
   const pushTr=()=>{const [f,e,th,base]=tr[ti++%tr.length];
-      if(th==="Verbes irréguliers"){items.push({kind:"Verbe irrégulier",key:"t:"+e,fr:f,en:e,steps:[["fr",f],["en",base],["beep"],["wait",4500*pauseF],["show"],["en",e],["wait",2500*pauseF],["en",e],["wait",900]]});est+=14+7*pauseF;return}
-      items.push({kind:"Traduction · "+th,key:"t:"+e,fr:f,en:e,steps:[["fr",f],["beep"],["wait",(2500+w(e)*700)*pauseF],["show"],["en",e],["wait",(1500+w(e)*450)*pauseF],["en",e],["wait",1200]]});
-      est+=8+w(e)*1.9*pauseF+w(f)*.4;};
+      if(th==="Verbes irréguliers"){items.push({kind:"Verbe irrégulier",key:"t:"+e,fr:f,en:e,steps:[["fr",f],["en",base],["beep"],["wait",4500*pauseF],["show"],["en",e],["wait",RP(e)],["en",e],["wait",RP(e)*reps],["wait",NEXT]]});est+=estSteps(items[items.length-1].steps);return}
+      items.push({kind:"Traduction · "+th,key:"t:"+e,fr:f,en:e,steps:[["fr",f],["beep"],["wait",(2500+w(e)*700)*pauseF],["show"],["en",e],["wait",RP(e)],["en",e],["wait",RP(e)*reps],["wait",NEXT]]});
+      est+=estSteps(items[items.length-1].steps);};
   const pushCloze=()=>{const it=qz[qi++%qz.length];const parts=it.q.replace(/\s*\(.*?\)/,"").split("___");const full=sentenceOf(it);
       const st=[["fr","Complète la phrase."]];parts.forEach((p,i)=>{if(p.trim())st.push(["en",p]);if(i<parts.length-1)st.push(["beep"])});
-      st.push(["wait",3500*pauseF],["show"],["en",full],["wait",(1500+w(full)*400)*pauseF],["fr",plain(it.e).split(/\.\s/)[0]],["wait",1200]);
+      st.push(["wait",3500*pauseF],["show"],["en",full],["wait",RP(full)*reps],["fr",plain(it.e).split(/\.\s/)[0]],["wait",NEXT]);
       items.push({kind:"Phrase à trous · "+it.c,key:"q:"+it.q,fr:it.q.replace(/___/g,"……"),en:full,steps:st});
-      est+=14+w(full)*1.3*pauseF;};
+      est+=estSteps(st);};
   const pushSpeak=()=>{const [q,tip]=sp[si++%sp.length];
-      items.push({kind:"Expression libre",key:"s:"+q,fr:"Réponds en anglais pendant 40 secondes.",en:q,show0:true,steps:[["fr","À toi de parler. Réponds en anglais."],["en",q],["beep"],["wait",40000*pauseF],["beep"],["en","Great. Here's a tip."],["en",tip],["wait",2000]]});
-      est+=52+40*pauseF;};
+      items.push({kind:"Expression libre",key:"s:"+q,fr:"Réponds en anglais pendant 40 secondes.",en:q,show0:true,steps:[["fr","À toi de parler. Réponds en anglais."],["en",q],["beep"],["wait",40000*pauseF],["beep"],["en","Great. Here's a tip."],["en",tip],["wait",NEXT]]});
+      est+=estSteps(items[items.length-1].steps);};
   const pushRf=()=>{const [src,kw,ans]=rf[ri++%rf.length];
-      items.push({kind:"Reformulation",key:"r:"+src,fr:`Redis la phrase avec le mot ${kw}.`,en:ans,steps:[["en","Say it another way, using the word: "+kw.toLowerCase()],["en",src],["en",kw.toLowerCase()],["beep"],["wait",(3500+w(ans)*600)*pauseF],["show"],["en",ans],["wait",(1500+w(ans)*450)*pauseF],["en",ans],["wait",1200]]});
-      est+=12+w(src)*.5+w(ans)*1.9*pauseF;};
+      items.push({kind:"Reformulation",key:"r:"+src,fr:`Redis la phrase avec le mot ${kw}.`,en:ans,steps:[["en","Say it another way, using the word: "+kw.toLowerCase()],["en",src],["en",kw.toLowerCase()],["beep"],["wait",(3500+w(ans)*600)*pauseF],["show"],["en",ans],["wait",RP(ans)],["en",ans],["wait",RP(ans)*reps],["wait",NEXT]]});
+      est+=estSteps(items[items.length-1].steps);};
   const pushSh=()=>{const e=sh[hi++%sh.length][1];
-      items.push({kind:"Shadowing",key:"h:"+e,fr:"Répète en même temps que la voix, avec la même intonation.",en:e,show0:true,steps:[["en","Listen, then repeat along with me."],["en",e],["wait",800],["en",e],["wait",(1200+w(e)*500)*pauseF],["en",e],["wait",1200]]});
-      est+=6+w(e)*2.2;};
+      items.push({kind:"Shadowing",key:"h:"+e,fr:"Répète en même temps que la voix, avec la même intonation.",en:e,show0:true,steps:[["en","Listen, then repeat along with me."],["en",e],["wait",800],["en",e],["wait",RP(e)],["en",e],["wait",RP(e)*reps],["wait",NEXT]]});
+      est+=estSteps(items[items.length-1].steps);};
   const pushQa=()=>{const [q,a]=qa[ai++%qa.length];
-      items.push({kind:"Question de réunion",key:"a:"+q,fr:"Réponds en anglais, comme en réunion.",en:a,steps:[["en","Answer the question."],["en",q],["beep"],["wait",15000*pauseF],["beep"],["en","Here's a possible answer."],["show"],["en",a],["wait",1500]]});
-      est+=10+15*pauseF+w(a)*.5;};
+      items.push({kind:"Question de réunion",key:"a:"+q,fr:"Réponds en anglais, comme en réunion.",en:a,steps:[["en","Answer the question."],["en",q],["beep"],["wait",15000*pauseF],["beep"],["en","Here's a possible answer."],["show"],["en",a],["wait",RP(a)*reps],["wait",NEXT]]});
+      est+=estSteps(items[items.length-1].steps);};
   const rf=pickFresh(RF,x=>"r:"+x[0],RF.length),qa=pickFresh(QA,x=>"a:"+x[0],QA.length);
   const sh=pickFresh(TRf.filter(t=>t[2]!=="Verbes irréguliers"&&t[1].split(" ").length<=14),t=>"h:"+t[1],Math.min(TRf.length,dur*2));
   let ri=0,ai=0,hi=0;
@@ -2039,7 +2081,7 @@ document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>goTab(b.dat
 document.querySelectorAll("#seg button").forEach(b=>b.onclick=()=>goSub(b.dataset.sub));
 // résumé des réglages
 const LBL={mix:{eq:"Équilibré",tr:"Surtout traduction"},pause:{1:"réponse normale",1.5:"réponse longue",2:"réponse très longue"},rate:{.65:"voix très lente",.75:"voix lente",.85:"voix normale",1:"voix naturelle"}};
-function updSum(){document.getElementById("setSum").textContent=`${dur} min · ${LBL.mix[mix]||""} · ${LBL.pause[pauseF]||""} · ${LBL.rate[rateEN]||""}`;document.getElementById("go").textContent=`▶ Démarrer · ${dur} min`}
+function updSum(){document.getElementById("setSum").textContent=`${dur} min · ${LBL.mix[mix]||""} · ${LBL.pause[pauseF]||""} · répéter ${reps} fois · ${LBL.rate[rateEN]||""}`;document.getElementById("go").textContent=`▶ Démarrer · ${dur} min`}
 document.getElementById("settings").addEventListener("click",()=>setTimeout(updSum,0));
 function renderTests(){const h=S.get("c1tests",[]);const el=document.getElementById("testHist");if(!h.length){el.innerHTML='<p class="fine">Pas encore de test. Le premier sert de point de départ.</p>';return}
   el.innerHTML='<div class="tw"><table><tr><th>Date</th><th>Score</th><th>Point le plus faible</th></tr>'+h.slice(-6).reverse().map(t=>{const dt=new Date(t.d*864e5);const w=Object.entries(t.by).sort((a,b)=>a[1][0]/a[1][1]-b[1][0]/b[1][1])[0];return `<tr><td>${dt.getUTCDate()} ${MONTHS[dt.getUTCMonth()].slice(0,4)}.</td><td class="sc">${t.score}/${t.n}</td><td>${w?w[0]:"–"}</td></tr>`}).join("")+'</table></div>'}
@@ -2637,7 +2679,7 @@ Little|loin de, pas du tout|Little did I know what was coming.
 Under no circumstances|en aucun cas|Under no circumstances should you share this.
 Only when / Only then|ce n'est que quand / qu'alors|Only when we tested it did we see the problem.
 Not until|pas avant|Not until Friday will we know.
-At no time|à aucun moment|At no time was the client informed.`,{say:[2]}),
+At no time|à aucun moment|At no time was the client informed.`,{say:[2]}),["h",moreHTML("nosooner")],
 T("Mettre en relief","Anglais|Français",`What I need is…|Ce dont j'ai besoin, c'est…
 What surprised me was…|Ce qui m'a surpris, c'est…
 It was Paul who…|C'est Paul qui…
