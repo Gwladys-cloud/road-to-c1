@@ -2044,7 +2044,13 @@ function setDone(i,v){doneT=doneT.filter(x=>x!==i);if(v)doneT.push(i);S.set(done
 function autoDone(kind){const w=WEEK[new Date().getDay()];const i=w.tasks.findIndex((t,j)=>t.auto===kind&&!doneT.includes(j));if(i>=0)setDone(i,true)}
 // jours d'entraînement d'affilée
 function markPractice(){const d=S.get("c1days",[]);const t=today();if(!d.includes(t)){d.push(t);S.set("c1days",d.slice(-400))}renderHome()}
-function dayStreak(){const d=new Set(S.get("c1days",[]));let t=today();if(!d.has(t))t--;let n=0;while(d.has(t)){n++;t--}return n}
+// jours pratiqués : liste c1days + toute trace d'activité (questions vues, tâches cochées, nouvelles cartes), pour ne perdre aucun jour
+function practiceDays(){const d=new Set(S.get("c1days",[]).filter(Number.isInteger));
+  try{Object.values(S.get("c1seen",{})).forEach(v=>{if(Number.isInteger(v))d.add(v)})}catch(e){}
+  try{Object.keys(localStorage).forEach(k=>{const m=/^c1(done|new)-(\d+)$/.exec(k);if(!m)return;const v=S.get(k,null);if(Array.isArray(v)?v.length:Number(v)>0)d.add(+m[2])})}catch(e){}
+  return d}
+function repairDays(){const cur=S.get("c1days",[]);const all=[...practiceDays()].sort((a,b)=>a-b);if(all.length>cur.length||all.some(x=>!cur.includes(x)))S.set("c1days",all.slice(-400))}
+function dayStreak(){const d=practiceDays();let t=today();if(!d.has(t))t--;let n=0;while(d.has(t)){n++;t--}return n}
 function setTheme(t){theme=t;S.set("c1theme2",t);chipGroup(document.getElementById("themeChips"),THEMES.map(x=>[x,catLabel(x)]),theme,v=>{theme=v;S.set("c1theme2",v);updFresh()});updFresh()}
 function act(a){const [k,v]=a.split(/:(.*)/);
   if(k==="sim"){const b=document.getElementById("simBox");b.hidden=false;document.getElementById("simTxt").value=SIM;b.scrollIntoView({behavior:"smooth",block:"center"});return}
@@ -2090,7 +2096,7 @@ document.getElementById("simClose").onclick=()=>{document.getElementById("simBox
 document.getElementById("simCopy").onclick=e=>{const t=document.getElementById("simTxt");const done=()=>{e.target.textContent="Copié ✓";setTimeout(()=>e.target.textContent="Copier la consigne",2000)};
   try{navigator.clipboard.writeText(SIM).then(done,()=>{t.select();e.target.textContent="Texte sélectionné : copie-le"})}catch(x){t.select();e.target.textContent="Texte sélectionné : copie-le"}};
 renderTests();
-updSum();renderHome();renderToday();goSub(S.get("c1sub","gram"));goTab("home");
+try{repairDays()}catch(e){}updSum();renderHome();renderToday();goSub(S.get("c1sub","gram"));goTab("home");
 
 // ================= GRAMMAIRE =================
 const GR=[];
@@ -2949,7 +2955,15 @@ window.c1Sync=(function(){
       window.addEventListener("online",()=>start(c),{once:true});return "offline"}
     const ts=C1SYNC.rd("_c1ts",{}),pend=new Set(C1SYNC.rd("_c1pending",[])),remote={};let changed=false;
     snap.docs.forEach(d=>{remote[d.id]=d.data()});
-    for(const k in remote){const r=remote[k];if(!C1SYNC.ok(k)||typeof r.json!=="string")continue;const rt=r.t||0,lt=ts[k]||0;
+    // c1days : on fusionne les jours des deux appareils au lieu d'écraser
+    if(remote.c1days&&typeof remote.c1days.json==="string"){try{
+      const rd=JSON.parse(remote.c1days.json),ld=C1SYNC.rd("c1days",[]);
+      const u=[...new Set([...(Array.isArray(rd)?rd:[]),...(Array.isArray(ld)?ld:[])])].filter(Number.isInteger).sort((a,b)=>a-b).slice(-400);
+      const uj=JSON.stringify(u);let cur=null;try{cur=localStorage.getItem("c1days")}catch(e){}
+      if(cur!==uj){try{localStorage.setItem("c1days",uj)}catch(e){}if(ld.length&&u.length!==ld.length)changed=true}
+      if(uj!==remote.c1days.json){ts.c1days=Date.now();pend.add("c1days")}else{ts.c1days=remote.c1days.t||0;pend.delete("c1days")}
+    }catch(e){}}
+    for(const k in remote){const r=remote[k];if(k==="c1days"||!C1SYNC.ok(k)||typeof r.json!=="string")continue;const rt=r.t||0,lt=ts[k]||0;
       if(pend.has(k)&&lt>=rt)continue;
       if(rt>lt){let cur=null;try{cur=localStorage.getItem(k)}catch(e){}if(cur!==r.json){try{localStorage.setItem(k,r.json);changed=true}catch(e){}}ts[k]=rt;pend.delete(k)}}
     const now=Date.now();
